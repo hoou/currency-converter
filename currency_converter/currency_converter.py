@@ -98,6 +98,9 @@ class Currency:
     def get_symbol(self):
         return self.symbol
 
+    def __eq__(self, other):
+        return self.code == other.code
+
 
 def main():
     arguments = parse_args()
@@ -109,11 +112,16 @@ def main():
 
     if arguments.output_currency:
         # If output currency set, print one rate
-        converted_amount = currency_rates.convert(
-            arguments.input_currency.get_code(),
-            arguments.output_currency.get_code(),
-            arguments.amount
-        )
+
+        # If output currency is the same as input currency don't convert
+        if arguments.input_currency == arguments.output_currency:
+            converted_amount = arguments.amount
+        else:
+            converted_amount = currency_rates.convert(
+                arguments.input_currency.get_code(),
+                arguments.output_currency.get_code(),
+                arguments.amount
+            )
         output = {arguments.output_currency.get_code(): converted_amount}
     else:
         # If output currency not set, print all rates
